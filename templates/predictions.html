@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}Predictions - Nepal Stock Predictor{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Stock Price Predictions</h2>
+    <p>Select a company to view ML-powered price predictions for the next 5 days.</p>
+</div>
+
+<div class="card">
+    <h2>Select Company</h2>
+    <div style="margin-bottom: 20px;">
+        <select id="companySelect" style="padding: 10px; margin-right: 10px; min-width: 200px;">
+            <option value="">Select a company...</option>
+            {% for company in companies %}
+            <option value="{{ company.id }}">{{ company.company_tag }} - {{ company.company_name }}</option>
+            {% endfor %}
+        </select>
+        <button onclick="loadPredictions()" class="btn">Get Predictions</button>
+    </div>
+</div>
+
+<div class="card" id="predictionsCard" style="display: none;">
+    <h2>Predictions - <span id="selectedCompanyName"></span></h2>
+    <div class="loading" id="loadingPredictions">Calculating predictions...</div>
+    <div id="predictionsContent"></div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Check URL params for pre-selected company
+window.onload = function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const companyId = urlParams.get('company');
+    if (companyId) {
+        document.getElementById('companySelect').value = companyId;
+        loadPredictions();
+    }
+};
+
+function loadPredictions() {
+    const select = document.getElementById('companySelect');
+    const companyId = select.value;
+    
+    if (!companyId) {
+        alert('Please select a company first.');
+        return;
+    }
+    
+    const card = document.getElementById('predictionsCard');
+    const loading = document.getElementById('loadingPredictions');
+    const content = document.getElementById('predictionsContent');
+    const companyName = document.getElementById('selectedCompanyName');
+    
+    // Show card and loading
+    card.style.display = 'block';
+    loading.style.display = 'block';
+    content.innerHTML = '';
+    
+    // Get company name from select
+    const selectedOption = select.options[select.selectedIndex];
+    companyName.textContent = selectedOption.text;
+    
+    // Scroll to predictions
+    card.scrollIntoView({ behavior: 'smooth' });
+    
+    fetchAPI(`/api/predictions/${companyId}`)
+        .then(data => {
+            loading.style.display = 'none';
+            displayPredictions(data);
+        })
+        .catch(error => {
+            loading.style.display = 'none';
+            content.innerHTML = `<div class="error">Error loading predictions: ${error.message}</div>`;
+        });
+}
+
+function displayPredictions(data) {
+    const content = document.getElementById('predictionsContent');
+    
+    let html = `
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">NPR ${data.company_info.last_price}</div>
+                <div>Current Price</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">${data.model_metrics.mae}</div>
+                <div>Model MAE</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">${data.model_metrics.rmse}</div>
+                <div>Model RMSE</div>
+            </div>
+        </div>
+        
+        <h3>5-Day Price Predictions</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Day</th>
+                    <th>Date</th>
+                    <th>Predicted Price</th>
+                    <th>Change from Current</th>
+                    <th>Change %</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    data.predictions.forEach(pred => {
+        const currentPrice = data.company_info.last_price;
+        const change = pred.predicted_price - currentPrice;
+        const changePercent = (change / currentPrice) * 100;
+        const changeClass = change >= 0 ? 'positive' : 'negative';
+        const changeSymbol = change >= 0 ? '+' : '';
+        
+        html += `
+            <tr>
+                <td><strong>Day ${pred.day}</strong></td>
+                <td>${pred.date}</td>
+                <td>NPR ${pred.predicted_price}</td>
+                <td class="${changeClass}">${changeSymbol}NPR ${change.toFixed(2)}</td>
+                <td class="${changeClass}">${changeSymbol}${changePercent.toFixed(2)}%</td>
+            </tr>
+        `;
+    });
+    
+    html += `
+            </tbody>
+        </table>
+        
+        <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 5px;">
+            <h4>Model Performance Metrics:</h4>
+            <p><strong>Mean Absolute Error (MAE):</strong> NPR ${data.model_metrics.mae} - Average prediction error</p>
+            <p><strong>Root Mean Square Error (RMSE):</strong> NPR ${data.model_metrics.rmse} - Overall prediction accuracy</p>
+            <p><em>Note: Lower values indicate better model accuracy. These predictions are based on historical patterns and should not be considered as financial advice.</em></p>
+        </div>
+    `;
+    
+    content.innerHTML = html;
+}
+</script>
+{% endblock %}
