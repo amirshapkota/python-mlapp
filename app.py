@@ -217,9 +217,9 @@ def calculate_investment_recommendation():
         pred_result, error = predict_stock_prices(company['id'])
         if pred_result:
             all_predictions[company['company_tag']] = pred_result
-            print(f"✓ Predictions ready for {company['company_tag']}")
+            print(f"Predictions ready for {company['company_tag']}")
         else:
-            print(f"✗ Failed for {company['company_tag']}: {error}")
+            print(f"Failed for {company['company_tag']}: {error}")
     
     if not all_predictions:
         return {}
