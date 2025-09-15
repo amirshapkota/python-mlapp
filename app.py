@@ -138,7 +138,7 @@ def predict_stock_prices(company_id, days=5):
             X_train, X_val = X, X[-2:]  # Use last 2 for validation
             y_train, y_val = y, y[-2:]
         else:
-            # Use last 80% for training, 20% for validation
+            # Use last 80% for training
             split_idx = int(len(X) * 0.8)
             X_train, X_val = X[:split_idx], X[split_idx:]
             y_train, y_val = y[:split_idx], y[split_idx:]
@@ -149,7 +149,7 @@ def predict_stock_prices(company_id, days=5):
         X_val_scaled = scaler.transform(X_val)
         
         # Train model with simpler parameters for small datasets
-        n_estimators = min(50, len(X_train) * 5)  # Adjust based on data size
+        n_estimators = min(50, len(X_train) * 5)
         max_depth = min(5, len(X_train) // 2)
         
         model = RandomForestRegressor(
