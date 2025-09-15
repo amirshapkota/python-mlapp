@@ -208,7 +208,6 @@ def predict_stock_prices(company_id, days=5):
         return None, f"Error in prediction: {str(e)}"
 
 def calculate_investment_recommendation():
-    """Calculate which stocks to buy on which days"""
     companies = get_all_companies()
     all_predictions = {}
     
@@ -340,7 +339,6 @@ def api_predictions(company_id):
 
 @app.route('/api/recommendations')
 def api_recommendations():
-    """API endpoint for investment recommendations"""
     try:
         recommendations = calculate_investment_recommendation()
         # Round numeric values for better display
@@ -356,25 +354,20 @@ def api_recommendations():
 
 @app.route('/predictions')
 def predictions_page():
-    """Predictions page"""
     companies = get_all_companies()
     return render_template('predictions.html', companies=companies.to_dict('records'))
 
 @app.route('/recommendations')
 def recommendations_page():
-    """Investment recommendations page"""
     return render_template('recommendations.html')
 
 @app.route('/database')
 def database_page():
-    """Database content page"""
     companies = get_all_companies()
     return render_template('database.html', companies=companies.to_dict('records'))
 
 if __name__ == '__main__':
-    print("Nepal Stock Predictor - Flask App")
-    print("=" * 40)
+    print("Nepal Stock Predictor")
     print("Starting server...")
     print("Open: http://localhost:5000")
-    print("=" * 40)
     app.run(debug=True, host='0.0.0.0', port=5000)

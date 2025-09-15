@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Database - Nepal Stock Predictor{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Database Content</h2>
+    <p>View all stored stock price history data from the database.</p>
+</div>
+
+<div class="card">
+    <h2>Companies</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Company Tag</th>
+                <th>Company Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for company in companies %}
+            <tr>
+                <td>{{ company.id }}</td>
+                <td><strong>{{ company.company_tag }}</strong></td>
+                <td>{{ company.company_name }}</td>
+                <td>
+                    <button onclick="loadPriceHistory({{ company.id }}, '{{ company.company_tag }}')" class="btn">
+                        Load Price History
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card" id="priceHistoryCard" style="display: none;">
+    <h2>Price History - <span id="selectedCompany"></span></h2>
+    <div class="loading" id="loadingHistory">Loading price history...</div>
+    <div id="priceHistoryContent"></div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function formatPrice(price) {
+    return parseFloat(price).toFixed(2);
+}
+
+function loadPriceHistory(companyId, companyTag) {
+    const card = document.getElementById('priceHistoryCard');
+    const loading = document.getElementById('loadingHistory');
+    const content = document.getElementById('priceHistoryContent');
+    const selectedCompany = document.getElementById('selectedCompany');
+    
+    // Show card and loading
+    card.style.display = 'block';
+    loading.style.display = 'block';
+    content.innerHTML = '';
+    selectedCompany.textContent = companyTag;
+    
+    // Scroll to the card
+    card.scrollIntoView({ behavior: 'smooth' });
+    
+    // Fetch price history
+    fetch(`/api/price_history/${companyId}`)
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+        })
+        .then(data => {
+            loading.style.display = 'none';
+            
+            if (data.length === 0) {
+                content.innerHTML = '<p>No price history found for this company.</p>';
+                return;
+            }
+            
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Open</th>
+                            <th>High</th>
+                            <th>Low</th>
+                            <th>Close</th>
+                            <th>Volume</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            data.forEach(record => {
+                html += `
+                    <tr>
+                        <td>${record.date}</td>
+                        <td>NPR ${formatPrice(record.open_price || 0)}</td>
+                        <td>NPR ${formatPrice(record.high_price || 0)}</td>
+                        <td>NPR ${formatPrice(record.low_price || 0)}</td>
+                        <td>NPR ${formatPrice(record.close_price || 0)}</td>
+                        <td>${record.volume || 0}</td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            html += `<p style="margin-top: 15px;"><strong>Total Records:</strong> ${data.length}</p>`;
+            
+            content.innerHTML = html;
+        })
+        .catch(error => {
+            loading.style.display = 'none';
+            content.innerHTML = `<div class="error">Error loading price history: ${error.message}</div>`;
+        });
+}
+</script>
+{% endblock %}

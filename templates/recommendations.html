@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block title %}Investment Recommendations - Nepal Stock Predictor{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Investment Recommendations</h2>
+    <p>AI-powered recommendations for optimal stock purchases over the next 5 days. Each day shows the best available stock to buy based on predicted returns and model confidence.</p>
+</div>
+
+<div class="card">
+    <h2>Generate Recommendations</h2>
+    <div style="text-align: center;">
+        <button onclick="loadRecommendations()" class="btn btn-success">Calculate Best Investment Strategy</button>
+    </div>
+</div>
+
+<div class="card" id="recommendationsCard" style="display: none;">
+    <h2>Investment Strategy</h2>
+    <div class="loading" id="loadingRecommendations">
+        Analyzing all stocks and calculating optimal investment strategy...<br>
+        <small>This may take a few moments as we process all companies.</small>
+    </div>
+    <div id="recommendationsContent"></div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function loadRecommendations() {
+    const card = document.getElementById('recommendationsCard');
+    const loading = document.getElementById('loadingRecommendations');
+    const content = document.getElementById('recommendationsContent');
+    
+    // Show card and loading
+    card.style.display = 'block';
+    loading.style.display = 'block';
+    content.innerHTML = '';
+    
+    // Scroll to recommendations
+    card.scrollIntoView({ behavior: 'smooth' });
+    
+    fetchAPI('/api/recommendations')
+        .then(data => {
+            loading.style.display = 'none';
+            displayRecommendations(data);
+        })
+        .catch(error => {
+            loading.style.display = 'none';
+            content.innerHTML = `<div class="error">Error loading recommendations: ${error.message}</div>`;
+        });
+}
+
+function displayRecommendations(data) {
+    const content = document.getElementById('recommendationsContent');
+    
+    if (Object.keys(data).length === 0) {
+        content.innerHTML = `
+            <div class="error">
+                No recommendations available. This could be due to:
+                <ul>
+                    <li>Insufficient historical data for prediction models</li>
+                    <li>All stocks having poor prediction accuracy</li>
+                    <li>Database connectivity issues</li>
+                </ul>
+                Please ensure you have adequate price history data for multiple companies.
+            </div>
+        `;
+        return;
+    }
+    
+    let html = `
+        <div class="success">
+            <strong>Investment Strategy Generated!</strong><br>
+            Found optimal buying opportunities for ${Object.keys(data).length} days.
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Recommended Stock</th>
+                    <th>Company Name</th>
+                    <th>Current Price</th>
+                    <th>Predicted Price</th>
+                    <th>Expected Return</th>
+                    <th>Confidence Score</th>
+                    <th>Model Accuracy (MAE)</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    // Sort by date
+    const sortedDates = Object.keys(data).sort();
+    let totalExpectedReturn = 0;
+    let dayCount = 0;
+    
+    sortedDates.forEach(date => {
+        const rec = data[date];
+        const returnClass = rec.expected_return >= 0 ? 'positive' : 'negative';
+        const returnSymbol = rec.expected_return >= 0 ? '+' : '';
+        
+        totalExpectedReturn += rec.expected_return;
+        dayCount++;
+        
+        html += `
+            <tr>
+                <td><strong>${date}</strong></td>
+                <td><strong>${rec.stock}</strong></td>
+                <td>${rec.company_name}</td>
+                <td>NPR ${rec.current_price}</td>
+                <td>NPR ${rec.predicted_price}</td>
+                <td class="${returnClass}"><strong>${returnSymbol}${rec.expected_return}%</strong></td>
+                <td>
+                    <div style="background: linear-gradient(90deg, #28a745 ${rec.confidence}%, #e9ecef ${rec.confidence}%); 
+                                padding: 5px; border-radius: 3px; text-align: center; color: white; text-shadow: 1px 1px 1px rgba(0,0,0,0.5);">
+                        ${rec.confidence}%
+                    </div>
+                </td>
+                <td>NPR ${rec.mae}</td>
+            </tr>
+        `;
+    });
+    
+    const avgReturn = totalExpectedReturn / dayCount;
+    const strategyClass = avgReturn >= 0 ? 'positive' : 'negative';
+    
+    html += `
+            </tbody>
+        </table>
+        
+        <div style="margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+            <h3>Strategy Summary</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">${dayCount}</div>
+                    <div>Investment Days</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number ${strategyClass}">${avgReturn.toFixed(2)}%</div>
+                    <div>Avg Expected Return</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number ${totalExpectedReturn >= 0 ? 'positive' : 'negative'}">${totalExpectedReturn.toFixed(2)}%</div>
+                    <div>Total Expected Return</div>
+                </div>
+            </div>
+            
+        </div>
+    `;
+    
+    content.innerHTML = html;
+}
+</script>
+{% endblock %}
