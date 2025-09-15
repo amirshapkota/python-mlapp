@@ -12,337 +12,206 @@
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Arial, sans-serif;
             line-height: 1.6;
-            background-color: #f8f9fa;
-            color: #333;
+            background-color: #f4f4f4;
         }
         
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
-            background: white;
-            min-height: 100vh;
         }
         
-        /* Navigation */
-        .nav {
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            padding: 15px 0;
-            margin: -20px -20px 30px -20px;
+        header {
+            background: #333;
+            color: white;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+        }
+        
+        nav li {
+            margin: 0 15px;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover, nav a.active {
+            background-color: #555;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
-        .nav-content {
-            max-width: 1160px;
-            margin: 0 auto;
-            padding: 0 20px;
+        .card h2 {
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
         }
         
-        .nav a {
-            color: white;
-            text-decoration: none;
-            margin-right: 30px;
-            font-weight: 600;
-            font-size: 16px;
-            transition: color 0.3s ease;
-        }
-        
-        .nav a:hover {
-            color: #ffd700;
-        }
-        
-        /* Headers */
-        h1, h2, h3 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-        }
-        
-        h1 {
-            font-size: 2.5rem;
-            border-bottom: 3px solid #3498db;
-            padding-bottom: 10px;
-            margin-bottom: 30px;
-        }
-        
-        h2 {
-            font-size: 2rem;
-            color: #34495e;
-        }
-        
-        h3 {
-            font-size: 1.5rem;
-            color: #555;
-        }
-        
-        /* Tables */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
-            background: white;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-            border-radius: 8px;
-            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
         }
         
         th {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background-color: #007bff;
             color: white;
-            padding: 15px 12px;
-            text-align: left;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            letter-spacing: 0.5px;
-        }
-        
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #e9ecef;
-            transition: background-color 0.3s ease;
         }
         
         tr:hover {
-            background-color: #f8f9fa;
+            background-color: #f5f5f5;
         }
         
-        tr:nth-child(even) {
-            background-color: #fdfdfd;
-        }
-        
-        /* Cards */
-        .card {
-            background: white;
-            padding: 25px;
-            margin: 20px 0;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            border-left: 5px solid #3498db;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 25px rgba(0,0,0,0.15);
-        }
-        
-        .prediction-card {
-            border-left-color: #27ae60;
-            background: linear-gradient(135deg, #f8fff8, #ffffff);
-        }
-        
-        .recommendation-card {
-            border-left-color: #f39c12;
-            background: linear-gradient(135deg, #fffbf0, #ffffff);
-        }
-        
-        .warning-card {
-            border-left-color: #e74c3c;
-            background: linear-gradient(135deg, #fff5f5, #ffffff);
-        }
-        
-        /* Buttons */
         .btn {
-            background: linear-gradient(135deg, #3498db, #2980b9);
+            background: #007bff;
             color: white;
             padding: 10px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
             text-decoration: none;
             display: inline-block;
-            margin-right: 10px;
-            margin-bottom: 5px;
+            margin: 5px;
         }
         
         .btn:hover {
-            background: linear-gradient(135deg, #2980b9, #1f618d);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+            background: #0056b3;
         }
         
-        .btn-success {
-            background: linear-gradient(135deg, #27ae60, #229954);
-        }
+        .btn-success { background: #28a745; }
+        .btn-success:hover { background: #1e7e34; }
         
-        .btn-success:hover {
-            background: linear-gradient(135deg, #229954, #1e8449);
-            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4);
-        }
+        .btn-danger { background: #dc3545; }
+        .btn-danger:hover { background: #c82333; }
         
-        .btn-warning {
-            background: linear-gradient(135deg, #f39c12, #e67e22);
-        }
-        
-        .btn-warning:hover {
-            background: linear-gradient(135deg, #e67e22, #d35400);
-            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4);
-        }
-        
-        /* Status indicators */
-        .positive {
-            color: #27ae60;
-            font-weight: bold;
-        }
-        
-        .negative {
-            color: #e74c3c;
-            font-weight: bold;
-        }
-        
-        .neutral {
-            color: #95a5a6;
-            font-weight: bold;
-        }
-        
-        /* Metrics */
-        .metric {
-            display: inline-block;
-            margin-right: 20px;
-            padding: 12px 16px;
-            background: linear-gradient(135deg, #ecf0f1, #bdc3c7);
-            border-radius: 8px;
-            font-weight: 600;
-            margin-bottom: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        
-        .metric-value {
-            font-size: 1.2em;
-            color: #2c3e50;
-        }
-        
-        /* Loading */
         .loading {
             text-align: center;
-            padding: 40px;
-            color: #7f8c8d;
-            font-style: italic;
+            padding: 20px;
+            color: #666;
         }
         
-        .loading::after {
-            content: '';
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #bdc3c7;
-            border-radius: 50%;
-            border-top-color: #3498db;
-            animation: spin 1s ease-in-out infinite;
-            margin-left: 10px;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        /* Error messages */
         .error {
-            color: #e74c3c;
-            background: #fadbd8;
-            padding: 15px;
+            color: #dc3545;
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
             border-radius: 5px;
-            border-left: 5px solid #e74c3c;
-            margin: 15px 0;
+            margin: 10px 0;
         }
         
-        /* Success messages */
         .success {
-            color: #27ae60;
-            background: #d5f4e6;
-            padding: 15px;
+            color: #155724;
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 10px;
             border-radius: 5px;
-            border-left: 5px solid #27ae60;
-            margin: 15px 0;
+            margin: 10px 0;
         }
         
-        /* Responsive */
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-            
-            .nav a {
-                margin-right: 15px;
-                font-size: 14px;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-            
-            table {
-                font-size: 14px;
-            }
-            
-            th, td {
-                padding: 8px;
-            }
-            
-            .card {
-                padding: 15px;
-            }
-            
-            .metric {
-                margin-right: 10px;
-                padding: 8px 12px;
-            }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
         }
         
-        /* Data display areas */
-        #data-display, #predictions-display, #recommendations-container {
-            margin-top: 30px;
+        .stat-card {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
         }
         
-        /* Stock symbols */
-        .stock-symbol {
-            font-family: 'Courier New', monospace;
+        .stat-number {
+            font-size: 2em;
             font-weight: bold;
-            color: #2c3e50;
-            background: #ecf0f1;
-            padding: 2px 6px;
-            border-radius: 3px;
+            margin-bottom: 5px;
+        }
+        
+        .positive { color: #28a745; font-weight: bold; }
+        .negative { color: #dc3545; font-weight: bold; }
+        
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 40px;
         }
     </style>
 </head>
 <body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="/" {% if request.endpoint == 'index' %}class="active"{% endif %}>Dashboard</a></li>
+                <li><a href="/database" {% if request.endpoint == 'database_page' %}class="active"{% endif %}>Database</a></li>
+                <li><a href="/predictions" {% if request.endpoint == 'predictions_page' %}class="active"{% endif %}>Predictions</a></li>
+                <li><a href="/recommendations" {% if request.endpoint == 'recommendations_page' %}class="active"{% endif %}>Recommendations</a></li>
+            </ul>
+        </nav>
+    </header>
+
     <div class="container">
-        <div class="nav">
-            <div class="nav-content">
-                <a href="/">Dashboard</a>
-                <a href="/predictions">Predictions</a>
-                <a href="/recommendations">Recommendations</a>
-                <a href="/database">Database</a>
-            </div>
-        </div>
-        
         {% block content %}{% endblock %}
     </div>
-    
+
+    <footer>
+        <p>&copy; 2025 Nepal Stock Predictor - ML-powered stock analysis</p>
+    </footer>
+
     <script>
-        // Utility functions
-        function formatCurrency(value) {
-            return new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'NPR'
-            }).format(value);
+        // Utility functions for API calls
+        function fetchAPI(url) {
+            return fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .catch(error => {
+                    console.error('API Error:', error);
+                    throw error;
+                });
         }
-        
-        function formatPercent(value) {
-            return value.toFixed(2) + '%';
+
+        function formatPrice(price) {
+            return parseFloat(price).toFixed(2);
         }
-        
-        function formatDate(dateString) {
-            return new Date(dateString).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            });
+
+        function formatPercentage(value) {
+            return parseFloat(value).toFixed(2) + '%';
         }
     </script>
+
+    {% block scripts %}{% endblock %}
 </body>
 </html>

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Nepal Stock Predictor{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Nepal Stock Market Dashboard</h2>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number">{{ companies|length }}</div>
+            <div>Total Companies</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ total_records }}</div>
+            <div>Price Records</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ latest_prices|length }}</div>
+            <div>Active Stocks</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h2>Current Stock Prices</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Company Tag</th>
+                <th>Company Name</th>
+                <th>Current Price (NPR)</th>
+                <th>Last Updated</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for company in companies %}
+            <tr>
+                <td><strong>{{ company.company_tag }}</strong></td>
+                <td>{{ company.company_name }}</td>
+                <td>
+                    {% if company.company_tag in latest_prices %}
+                        NPR {{ "%.2f"|format(latest_prices[company.company_tag].price) }}
+                    {% else %}
+                        <span style="color: #999;">No data</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if company.company_tag in latest_prices %}
+                        {{ latest_prices[company.company_tag].date }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="/predictions?company={{ company.id }}" class="btn">View Predictions</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <h2>Quick Actions</h2>
+    <div style="text-align: center;">
+        <a href="/predictions" class="btn btn-success">Stock Predictions</a>
+        <a href="/recommendations" class="btn btn-success">Investment Recommendations</a>
+        <a href="/database" class="btn">View All Data</a>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Auto-refresh prices every 5 minutes
+setTimeout(function() {
+    location.reload();
+}, 300000);
+</script>
+{% endblock %}
